@@ -2,7 +2,7 @@ import random
 import requests
 
 # Define the target webserver where all requests will be sent
-target_webserver = 'https://www.yourwebserver.attack.demo'
+target_webserver = 'https://www.yourwebserver.attack'
 
 # List of out-of-band domains to be used in the attack simulation payloads
 oob_domains = [
